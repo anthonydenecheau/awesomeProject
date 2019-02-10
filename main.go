@@ -17,6 +17,7 @@ import (
 // https://www.codementor.io/codehakase/building-a-restful-api-with-golang-a6yivzqdo
 // https://itnext.io/structuring-a-production-grade-rest-api-in-golang-c0229b3feedc
 // https://medium.com/@adigunhammedolalekan/build-and-deploy-a-secure-rest-api-with-go-postgresql-jwt-and-gorm-6fadf3da505b
+// https://github.com/tsuru/tsuru/blob/master/router/router.go
 
 // Docker :
 // https://www.callicoder.com/docker-golang-image-container-example/
