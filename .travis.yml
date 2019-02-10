@@ -27,6 +27,7 @@ before_install:
 - travis version
 - export BUILD_NAME=awesomeProject-$TRAVIS_BRANCH-$(date -u "+%Y%m%d%H%M%S")-$TRAVIS_BUILD_NUMBER
 script:
+- go get github.com/anthonydenecheau/awesomeProject
 - sh scripts/travis/travis.gofmt.sh
 - sh scripts/travis/tag_build.sh
 - sh scripts/travis/build_services.sh
