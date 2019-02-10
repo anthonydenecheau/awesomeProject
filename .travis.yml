@@ -26,12 +26,11 @@ before_install:
 - gem install travis -v 1.8.9 --no-document
 - travis version
 - export BUILD_NAME=awesomeProject-$TRAVIS_BRANCH-$(date -u "+%Y%m%d%H%M%S")-$TRAVIS_BUILD_NUMBER
-#- export GOPATH=$HOME/gopath
-- export TRAVIS_BUILD_DIR=$HOME/gopath/src/awesomeProject
-  #- cd $HOME/gopath/src
-  #- mv github.com/{user}/awesomeProject ./
-  #- cd awesomeProject
-- go build
+before_script:
+  - go vet ./...
+install:
+- export GOPATH="${TRAVIS_BUILD_DIR}/Godeps/_workspace:$GOPATH"
+- export PATH="${TRAVIS_BUILD_DIR}/Godeps/_workspace/bin:$PATH"
 script:
 - sh scripts/travis/travis.gofmt.sh
 - sh scripts/travis/tag_build.sh
