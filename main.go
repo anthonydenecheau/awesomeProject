@@ -1,7 +1,7 @@
 package main
 
 import (
-	"awesomeProject/controllers"
+	"awesomeProject/person"
 	"context"
 	"github.com/gorilla/mux"
 	"log"
@@ -23,10 +23,10 @@ import (
 // https://container-solutions.com/faster-builds-in-docker-with-go-1-11/
 func main() {
 	router := mux.NewRouter()
-	router.HandleFunc("/people", controllers.GetPeopleEndpoint).Methods("GET")
-	router.HandleFunc("/people/{id}", controllers.GetPersonEndpoint).Methods("GET")
-	router.HandleFunc("/people/{id}", controllers.CreatePersonEndpoint).Methods("POST")
-	router.HandleFunc("/people/{id}", controllers.DeletePersonEndpoint).Methods("DELETE")
+	router.HandleFunc("/people", person.GetPeopleEndpoint).Methods("GET")
+	router.HandleFunc("/people/{id}", person.GetPersonEndpoint).Methods("GET")
+	router.HandleFunc("/people/{id}", person.CreatePersonEndpoint).Methods("POST")
+	router.HandleFunc("/people/{id}", person.DeletePersonEndpoint).Methods("DELETE")
 
 	srv := &http.Server{
 		Handler:      router,
@@ -63,4 +63,3 @@ func waitForShutdown(srv *http.Server) {
 	log.Println("Shutting down")
 	os.Exit(0)
 }
-

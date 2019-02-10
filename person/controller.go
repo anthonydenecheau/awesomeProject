@@ -1,19 +1,19 @@
-package controllers
+package person
 
 import (
 	"encoding/json"
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
-	"awesomeProject/models"
 )
 
-var people []models.Person
+var people []Person
 
 var GetPeopleEndpoint = func(w http.ResponseWriter, r *http.Request) {
 	log.Println("GetPeopleEndpoint")
 	json.NewEncoder(w).Encode(people)
 }
+
 func GetPersonEndpoint(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 
@@ -25,11 +25,11 @@ func GetPersonEndpoint(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-	json.NewEncoder(w).Encode(&models.Person{})
+	json.NewEncoder(w).Encode(Person{})
 }
 func CreatePersonEndpoint(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
-	var person models.Person
+	var person Person
 	_ = json.NewDecoder(r.Body).Decode(&person)
 	person.ID = params["id"]
 	people = append(people, person)
@@ -46,7 +46,7 @@ func DeletePersonEndpoint(w http.ResponseWriter, r *http.Request) {
 	}
 }
 func init() {
-	people = append(people, models.Person{ID: "1", Firstname: "John", Lastname: "Doe", Address: &models.Address{City: "City X", State: "State X"}})
-	people = append(people, models.Person{ID: "2", Firstname: "Koko", Lastname: "Doe", Address: &models.Address{City: "City Z", State: "State Y"}})
+	people = append(people, Person{ID: "1", Firstname: "John", Lastname: "Doe", Address: &Address{City: "City X", State: "State X"}})
+	people = append(people, Person{ID: "2", Firstname: "Koko", Lastname: "Doe", Address: &Address{City: "City Z", State: "State Y"}})
 
 }

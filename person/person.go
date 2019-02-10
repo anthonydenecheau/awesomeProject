@@ -1,4 +1,4 @@
-package models
+package person
 
 type Person struct {
 	ID        string   `json:"id,omitempty`
@@ -10,4 +10,3 @@ type Address struct {
 	City  string `json:"city,omitempty"`
 	State string `json:"state,omitempty"`
 }
-
