@@ -24,12 +24,14 @@ FROM build_base AS server_builder
 # Here we copy the rest of the source code
 COPY . .
 # And compile the project
-RUN CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go install -a -tags netgo -ldflags '-w -extldflags "-static"' /go/bin/awesomeProject-server
+RUN CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go install \
+    -a -tags netgo -ldflags '-w -extldflags "-static"' \
+    /awesomeProject
 
 #In this last stage, we start from a fresh Alpine image, to reduce the image size and not ship the Go compiler in our production artifacts.
 FROM alpine AS awesomeProject
 # We add the certificates to be able to verify remote awesomeProject instances
 RUN apk add ca-certificates
 # Finally we copy the statically compiled Go binary.
-COPY --from=server_builder /go/bin/awesomeProject-server /bin/awesomeProject
+COPY --from=server_builder /awesomeProject /bin/awesomeProject
 ENTRYPOINT ["/bin/awesomeProject"]
