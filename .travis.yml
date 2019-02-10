@@ -22,11 +22,19 @@ env:
   - secure: ff7UC3Or+MDCIlakx20gv26SdJMJLdWyo7S+0swxzNe/BSvNxrE7uCfNp9ik5aFUWuCrd1xS1AFmob66Ffcb+3bTTT6B//9QuT6srDImmALa4d0taX0sqb4uNfOqnHBkfhktcb0mhTen2EANgu+S5KJr57fjsBXWqFsGUwe4Paiq6hHsyxolDLXTB/zDf7ZfzfOaiHZH9wvrcMp9EqfiwZY/mGwdkkP5I2ZeOh9jc+JXJ9t4LgbArtSxNYVmiPkzOo8ZSLzrSTqJuin/6n/kVN5bEOu7CTwc7SfG7+fHoW3/5vCsXOO6p1Pj99ECXt7ejtUrVR5PwqNMzL3ZVTEJF0CqPzdqs/IonUKtbBdb94f0+D9N3q+beYJAnt8sf0RZdZ6c/3nsV3ocwFyDf0W4Z0wR9ufzb/LzhCCEjPhSpBbHlIexDEuhvj9PE4wYd2S9Sg/K4SbdZc1F8A/5JN5TdLRrEq67R5hHQez2n0YVzumieG/LkeefdMSAq8VtI+sMYaQACrp9/cj8rChbFOl6T9Klk1HYvipt1TWtu7U/Uu/Bj0j8lzBm3zRWTig2qu4WbT+s3WLDLKWkFAAchD8CFlZI8LH+w5e9sOXUWYEtCw0yVvs7U/5ZvTmIOkf1ZZPYxCkjUgB0I07IEbWqcouu9Em/uFdZLyM6TgUPBKOKALI=
   - secure: alQ4vz44M7BvCxOiLceuG21PRFE5ERrqtEl7AWX086U8q95eCAGIHaC/gF/aRPxXc2RSHxG4JME6sdKiD2Brh1JVLQVz7uUQjrNxyAX7aH/Uhp6P3FeKQxvfJjiTza+KVNtkKLmdWJbAoVkSaNMLtuVGRJanO51qhA5rrGNOVsL62kRkOUOTQQsqmzwU3T6vDvyyg7dB2Z3424uwlOG+la9leZ4sUmqwhj6XrTh//gwbT93ykUVz5xR/PtxwwZrwMyjjQNOEfydHoI3xrLkv5NBqsd1cOn5yn4SUlnP9dcbKsxANfiAKrKOQEeS6PeVyyynurnMXTJSRRCNQzgvxX+ojaQCUmpZrVKDwHGheLzFh9yrLSN/4PyRNGRlUAb6u1pq65mZMyR69+T+7uq8ZXF9PA9XznI3thp/jy4czz1sPGqze48B48R1tnXIjCWlIi182ug09EkbB0zwexVjcqzPElHr528Khty6iImX9Mk5jo7SBSPHnZFuNGus0136FfGBM5lv2Pu6j8NGVy5ID5WyUeDEjJ6ROA00UqP2mnjErCTxd/MG+KG5NiCRSMiRkSFbEbAAQN0skuIwk6DWG2YccSLZ2HQ+CrD0SSB57F/I42cChfuIGKrBKeBZo2BongYmZFPSYuzvKYKaRR1JyI3TlIm2J3XkQh5bKNckhDKw=
 before_install:
-- ruby -v
-- gem install travis -v 1.8.9 --no-document
-- travis version
-- export BUILD_NAME=awesomeProject-$TRAVIS_BRANCH-$(date -u "+%Y%m%d%H%M%S")-$TRAVIS_BUILD_NUMBER
+  - ruby -v
+  - gem install travis -v 1.8.9 --no-document
+  - travis version
+  - export BUILD_NAME=awesomeProject-$TRAVIS_BRANCH-$(date -u "+%Y%m%d%H%M%S")-$TRAVIS_BUILD_NUMBER
+install:
+  - export GOPATH=$HOME/gopath
+  - export TRAVIS_BUILD_DIR=$HOME/gopath/src/foo
+  - cd $HOME/gopath/src
+  - mv github.com/{user}/foo ./
+  - cd foo
+  - - go build
 script:
-- sh scripts/travis/tag_build.sh
-- sh scripts/travis/build_services.sh
-- sh scripts/travis/deploy_to_docker_hub.sh
+  - sh scripts/travis/travis.gofmt.sh
+  - sh scripts/travis/tag_build.sh
+  - sh scripts/travis/build_services.sh
+  - sh scripts/travis/deploy_to_docker_hub.sh
