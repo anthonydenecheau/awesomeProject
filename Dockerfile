@@ -19,12 +19,12 @@ COPY go.sum .
 # (or when we add another docker instruction this line)
 RUN go mod download
 
-# This image builds the weavaite server
+# This image builds the awesomeProject server
 FROM build_base AS server_builder
 # Here we copy the rest of the source code
 COPY . .
 # And compile the project
-RUN CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go install -a -tags netgo -ldflags '-w -extldflags "-static"' ./cmd/awesomeProject-server
+RUN CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go install -a -tags netgo -ldflags '-w -extldflags "-static"' /go/bin/awesomeProject-server
 
 #In this last stage, we start from a fresh Alpine image, to reduce the image size and not ship the Go compiler in our production artifacts.
 FROM alpine AS awesomeProject
