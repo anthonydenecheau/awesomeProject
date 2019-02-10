@@ -1,7 +1,7 @@
 package main
 
 import (
-	"awesomeProject/person"
+	"github.com/awesomeProject/person"
 	"context"
 	"github.com/gorilla/mux"
 	"log"
