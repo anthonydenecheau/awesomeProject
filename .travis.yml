@@ -27,12 +27,13 @@ before_install:
 - travis version
 - export BUILD_NAME=awesomeProject-$TRAVIS_BRANCH-$(date -u "+%Y%m%d%H%M%S")-$TRAVIS_BUILD_NUMBER
 - export GOPATH=$HOME/gopath
-- export TRAVIS_BUILD_DIR=$HOME/gopath/src/foo
+- export TRAVIS_BUILD_DIR=$HOME/gopath/src/awesomeProject
 - cd $HOME/gopath/src
-- mv github.com/{user}/foo ./
-- cd foo
+- mv github.com/{user}/awesomeProject ./
+- cd awesomeProject
 - go build
 script:
+- sh scripts/travis/travis.gofmt.sh
 - sh scripts/travis/tag_build.sh
 - sh scripts/travis/build_services.sh
 - sh scripts/travis/deploy_to_docker_hub.sh
