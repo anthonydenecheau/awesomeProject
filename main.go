@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/awesomeProject/person"
 	"context"
+	"github.com/anthonydenecheau/awesomeProject/person"
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
