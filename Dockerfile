@@ -3,7 +3,7 @@ FROM golang:1.11-alpine AS build_base
 
 # Install some dependencies needed to build the project
 RUN apk add bash ca-certificates git gcc g++ libc-dev
-WORKDIR /go/src/awesomeProject
+WORKDIR /go/src/gopocservice
 
 # Force the go compiler to use modules
 ENV GO111MODULE=on
@@ -19,17 +19,17 @@ COPY go.sum .
 # (or when we add another docker instruction this line)
 RUN go mod download
 
-# This image builds the awesomeProject server
+# This image builds the gopocservice server
 FROM build_base AS server_builder
 # Here we copy the rest of the source code
 COPY . .
 # And compile the project
-RUN GOOS=linux GOARCH=amd64 go build -ldflags="-w -s" -o /go/bin/awesomeProject
+RUN GOOS=linux GOARCH=amd64 go build -ldflags="-w -s" -o /go/bin/gopocservice
 
 #In this last stage, we start from a fresh Alpine image, to reduce the image size and not ship the Go compiler in our production artifacts.
-FROM alpine AS awesomeProject
-# We add the certificates to be able to verify remote awesomeProject instances
+FROM alpine AS gopocservice
+# We add the certificates to be able to verify remote gopocservice instances
 RUN apk add ca-certificates
 # Finally we copy the statically compiled Go binary.
-COPY --from=server_builder /go/bin/awesomeProject /bin/awesomeProject
-ENTRYPOINT ["/bin/awesomeProject"]
+COPY --from=server_builder /go/bin/gopocservice /bin/gopocservice
+ENTRYPOINT ["/bin/gopocservice"]

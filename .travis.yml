@@ -24,14 +24,14 @@ before_install:
 - ruby -v
 - gem install travis -v 1.8.9 --no-document
 - travis version
-- export BUILD_NAME=awesomeproject-$TRAVIS_BRANCH-$(date -u "+%Y%m%d%H%M%S")-$TRAVIS_BUILD_NUMBER
+- export BUILD_NAME=gopocservice-$TRAVIS_BRANCH-$(date -u "+%Y%m%d%H%M%S")-$TRAVIS_BUILD_NUMBER
 before_script:
 - export GOPATH=$HOME/gopath
 - export PATH=$HOME/gopath/bin:$PATH
-- mkdir -p $HOME/gopath/src/github.com/anthonydenecheau/awesomeProject
-- rsync -az ${TRAVIS_BUILD_DIR}/ $HOME/gopath/src/github.com/anthonydenecheau/awesomeProject/
-- export TRAVIS_BUILD_DIR=$HOME/gopath/src/github.com/anthonydenecheau/awesomeProject
-- cd $HOME/gopath/src/github.com/anthonydenecheau/awesomeProject
+- mkdir -p $HOME/gopath/src/github.com/anthonydenecheau/gopocservice
+- rsync -az ${TRAVIS_BUILD_DIR}/ $HOME/gopath/src/github.com/anthonydenecheau/gopocservice/
+- export TRAVIS_BUILD_DIR=$HOME/gopath/src/github.com/anthonydenecheau/gopocservice
+- cd $HOME/gopath/src/github.com/anthonydenecheau/gopocservice
 script:
 - sh scripts/travis/travis.gofmt.sh
 - sh scripts/travis/tag_build.sh
