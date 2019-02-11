@@ -2,8 +2,7 @@ package main
 
 import (
 	"context"
-	"github.com/anthonydenecheau/awesomeProject/person"
-	"github.com/gorilla/mux"
+	"github.com/anthonydenecheau/gopocservice/router"
 	"log"
 	"net/http"
 	"os"
@@ -18,19 +17,21 @@ import (
 // https://itnext.io/structuring-a-production-grade-rest-api-in-golang-c0229b3feedc
 // https://medium.com/@adigunhammedolalekan/build-and-deploy-a-secure-rest-api-with-go-postgresql-jwt-and-gorm-6fadf3da505b
 // https://github.com/tsuru/tsuru/blob/master/router/router.go
+//https://thenewstack.io/make-a-restful-json-api-go/
+
+// Librairies
+// https://hackernoon.com/the-myth-about-golang-frameworks-and-external-libraries-93cb4b7da50f
+// https://www.getrevue.co/profile/golang/issues/writing-a-go-chat-server-the-myths-about-golang-frameworks-much-more-140766
 
 // Docker :
 // https://www.callicoder.com/docker-golang-image-container-example/
 // https://container-solutions.com/faster-builds-in-docker-with-go-1-11/
 func main() {
-	router := mux.NewRouter()
-	router.HandleFunc("/people", person.GetPeopleEndpoint).Methods("GET")
-	router.HandleFunc("/people/{id}", person.GetPersonEndpoint).Methods("GET")
-	router.HandleFunc("/people/{id}", person.CreatePersonEndpoint).Methods("POST")
-	router.HandleFunc("/people/{id}", person.DeletePersonEndpoint).Methods("DELETE")
+
+	r := router.NewRouter()
 
 	srv := &http.Server{
-		Handler:      router,
+		Handler:      r,
 		Addr:         ":8080",
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 10 * time.Second,
