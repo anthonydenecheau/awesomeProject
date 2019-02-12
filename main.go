@@ -23,11 +23,14 @@ import (
 // https://hackernoon.com/the-myth-about-golang-frameworks-and-external-libraries-93cb4b7da50f
 // https://www.getrevue.co/profile/golang/issues/writing-a-go-chat-server-the-myths-about-golang-frameworks-much-more-140766
 
+// Projet
+// https://github.com/uchonyy/echo-rest-api
+
 // Docker :
 // https://www.callicoder.com/docker-golang-image-container-example/
 // https://container-solutions.com/faster-builds-in-docker-with-go-1-11/
 func main() {
-
+	//teest
 	r := router.NewRouter()
 
 	srv := &http.Server{
