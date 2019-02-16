@@ -1,7 +1,7 @@
-package person
+package renderings
 
-type Person struct {
-	ID        string   `json:"id,omitempty"`
+type PersonResponse struct {
+	ID        int      `json:"id,omitempty"`
 	Firstname string   `json:"firstname,omitempty"`
 	Lastname  string   `json:"lastname,omitempty"`
 	Address   *Address `json:"address,omitempty"`

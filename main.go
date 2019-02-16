@@ -2,67 +2,64 @@ package main
 
 import (
 	"context"
-	"github.com/anthonydenecheau/gopocservice/router"
-	"log"
-	"net/http"
+	"github.com/anthonydenecheau/gopocservice/config/db"
+	"github.com/anthonydenecheau/gopocservice/config/middleware"
+	person "github.com/anthonydenecheau/gopocservice/repository"
 	"os"
 	"os/signal"
-	"syscall"
 	"time"
-)
 
-// Notes :
-// https://www.jetbrains.com/help/go/install-and-set-up-product.html
-// https://www.codementor.io/codehakase/building-a-restful-api-with-golang-a6yivzqdo
-// https://itnext.io/structuring-a-production-grade-rest-api-in-golang-c0229b3feedc
-// https://medium.com/@adigunhammedolalekan/build-and-deploy-a-secure-rest-api-with-go-postgresql-jwt-and-gorm-6fadf3da505b
-// https://github.com/tsuru/tsuru/blob/master/router/router.go
-//https://thenewstack.io/make-a-restful-json-api-go/
+	"github.com/labstack/echo/v4"
+)
 
 // Librairies
 // https://hackernoon.com/the-myth-about-golang-frameworks-and-external-libraries-93cb4b7da50f
 // https://www.getrevue.co/profile/golang/issues/writing-a-go-chat-server-the-myths-about-golang-frameworks-much-more-140766
+// https://qiita.com/moz450/items/bdd0eb8dff24caa5174a
 
-// Docker :
-// https://www.callicoder.com/docker-golang-image-container-example/
-// https://container-solutions.com/faster-builds-in-docker-with-go-1-11/
+// https://github.com/sepulsa/rest_echo
+// https://github.com/uchonyy/echo-rest-api
+// https://github.com/PacktPublishing/Echo-Essentials/tree/master/chapter8
+// go get -u github.com/labstack/echo
+
+// Functions
+// https://github.com/s1s1ty/Data-Structures-and-Algorithms
+
+// Architecture
+// https://hackernoon.com/golang-clean-archithecture-efd6d7c43047
+// https://github.com/hirotakan/go-cleanarchitecture-sample
+// https://github.com/bxcodec/go-clean-arch
+//
+// Google Cloud
+// https://github.com/abronan/todo-grpc/blob/master/main.go
 func main() {
 
-	//test NewBranch
-	r := router.NewRouter()
+	// Db Connection
+	person.InitPerson(&person.DbPerson{Db: db.Connect()})
 
-	srv := &http.Server{
-		Handler:      r,
-		Addr:         ":8080",
-		ReadTimeout:  10 * time.Second,
-		WriteTimeout: 10 * time.Second,
-	}
+	// Echo instance
+	r := middleware.NewRouter()
 
 	// Start Server
 	go func() {
-		log.Println("Starting Server")
-		if err := srv.ListenAndServe(); err != nil {
-			log.Fatal(err)
+		r.Logger.Info("Starting Server")
+		if err := r.Start(":8080"); err != nil {
+			r.Logger.Info("shutting down the server")
 		}
 	}()
 
 	// Graceful Shutdown
-	waitForShutdown(srv)
-
+	waitForShutdown(r)
 }
 
-func waitForShutdown(srv *http.Server) {
-	interruptChan := make(chan os.Signal, 1)
-	signal.Notify(interruptChan, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
-
-	// Block until we receive our signal.
-	<-interruptChan
-
-	// Create a deadline to wait for.
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
+func waitForShutdown(r *echo.Echo) {
+	// Wait for interrupt signal to gracefully shutdown the server with a timeout of 10 seconds.
+	quit := make(chan os.Signal)
+	signal.Notify(quit, os.Interrupt)
+	<-quit
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	srv.Shutdown(ctx)
-
-	log.Println("Shutting down")
-	os.Exit(0)
+	if err := r.Shutdown(ctx); err != nil {
+		r.Logger.Fatal(err)
+	}
 }
