@@ -1,4 +1,4 @@
-package middleware
+package http
 
 import (
 	"encoding/json"
@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	prehandle "github.com/anthonydenecheau/gopocservice/delivery"
-	"github.com/anthonydenecheau/gopocservice/delivery/renderings"
+	"github.com/anthonydenecheau/gopocservice/health/delivery/renderings"
 	"github.com/labstack/echo/v4"
 )
 

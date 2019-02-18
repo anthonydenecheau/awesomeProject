@@ -1,7 +1,7 @@
 package renderings
 
-type PersonResponse struct {
-	ID        int      `json:"id,omitempty"`
+type BreederResponse struct {
+	Id        int64    `json:"id,omitempty"`
 	Firstname string   `json:"firstname,omitempty"`
 	Lastname  string   `json:"lastname,omitempty"`
 	Address   *Address `json:"address,omitempty"`

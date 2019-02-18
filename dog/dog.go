@@ -1,4 +1,4 @@
-package model
+package dog
 
 type Dog struct {
 	id              int

@@ -1,9 +1,11 @@
-package model
+package breeder
 
-import "time"
+import (
+	"time"
+)
 
 // https://github.com/go-pg/pg/wiki/Model-Definition
-type Ws_dog_eleveur struct {
+type Breeder struct {
 	TableName           struct{} `sql:"ws_dog_eleveur"`
 	Id                  int64
 	Civilite            string

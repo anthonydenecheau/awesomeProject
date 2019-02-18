@@ -1,0 +1,13 @@
+{
+  "debug": true,
+  "server": {
+    "address": ":8080"
+  },
+  "database": {
+    "host": "10.3.2.5",
+    "port": "5432",
+    "user": "ws_dev",
+    "pass": "ws_dev",
+    "name": "ws_dev"
+  }
+}

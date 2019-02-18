@@ -1,91 +1,44 @@
 package middleware
 
 import (
-	prehandle "github.com/anthonydenecheau/gopocservice/delivery"
-	"github.com/anthonydenecheau/gopocservice/delivery/renderings"
-	"log"
-
+	"github.com/anthonydenecheau/gopocservice/health/delivery/renderings"
 	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
-	logMiddleware "github.com/labstack/gommon/log"
+	"github.com/satori/go.uuid"
+	"net/http"
 )
 
-func CreateRoutesGeneric(router *echo.Echo) *echo.Echo {
+const (
+	RequestIDContextKey = "gopocservice_correlation_id"
+)
 
-	// endpoints attachés au routeur
-	for _, route := range routesMiddleware {
-		log.Println("Add route {}", route.Name)
-		router.Logger.Infof("Add route %s", route.Name)
-		router.Add(route.Method, route.Pattern, route.HandlerFunc)
-	}
-
-	return router
+type goMiddleware struct {
+	// another stuff , may be needed by middleware
 }
-func CreateRoutesApi(router *echo.Group) *echo.Group {
 
-	// endpoints attachés aux API
-	for _, route := range routesApi {
-		log.Println("Add route {}", route.Name)
-		//router.Infof("Add route %s", route.Name)
-		router.Add(route.Method, route.Pattern, route.HandlerFunc)
+func (m *goMiddleware) CORS(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		c.Response().Header().Set("Access-Control-Allow-Origin", "*")
+		return next(c)
 	}
-
-	return router
 }
-func NewRouter() *echo.Echo {
-
-	log.Println("Create router ... ")
-	r := echo.New()
-
-	r.Logger.SetLevel(logMiddleware.INFO)
-
-	// Middleware
-	r.Pre(prehandle.RequestIDMiddleware)
-	r.Pre(middleware.RemoveTrailingSlash())
-
-	r.Use(middleware.Logger())
-	r.Use(middleware.Recover())
-
-	r.HTTPErrorHandler = func(err error, c echo.Context) {
-		if c.Response().Committed {
-			return
-		}
-		if he, ok := err.(*echo.HTTPError); ok {
-			c.JSON(he.Code, renderings.Error{
-				Status:  he.Code,
-				Message: he.Error(),
-			})
-		}
+func (m *goMiddleware) RequestIDMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		correlation := uuid.NewV4()
+		c.Set(RequestIDContextKey, correlation)
+		c.Response().Header().Set(RequestIDContextKey, correlation.String())
+		c.Logger().Infof("Set %s %s", RequestIDContextKey, c.Get(RequestIDContextKey))
+		return next(c)
 	}
-
-	//CORS
-	r.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins: []string{"*"},
-		AllowMethods: []string{echo.GET, echo.HEAD, echo.PUT, echo.PATCH, echo.POST, echo.DELETE},
-	}))
-
-	// endpoints attachés au routeur
-	CreateRoutesGeneric(r)
-
-	tokens := authenticationMiddleware{make(map[string]string)}
-	tokens.Populate()
-	v1 := r.Group("/api/v1")
-	v1.Use(middleware.KeyAuthWithConfig(middleware.KeyAuthConfig{
-		KeyLookup: "header:X-SCC-authentification",
-		Validator: func(key string, c echo.Context) (bool, error) {
-			token := c.Request().Header.Get("X-SCC-authentification")
-			if user, found := tokens.tokenUsers[token]; found {
-				c.Logger().Infof("Authenticated user %s", user)
-				return true, nil
-			} else {
-				return false, nil
-			}
-		},
-	}))
-
-	// endpoints attachés aux API
-	CreateRoutesApi(v1)
-
-	return r
-
+}
+func HealthCheck(c echo.Context) error {
+	if reqID, ok := c.Get(RequestIDContextKey).(uuid.UUID); ok {
+		c.Logger().Infof("RequestID: %s", reqID.String())
+	}
+	resp := renderings.HealthCheckResponse{
+		Message: "Everything is good!",
+	}
+	return c.JSON(http.StatusOK, resp)
+}
+func InitMiddleware() *goMiddleware {
+	return &goMiddleware{}
 }
